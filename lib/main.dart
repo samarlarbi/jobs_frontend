@@ -2,6 +2,10 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobs_app/account/AccountScreen.dart';
+import 'package:jobs_app/reservations/reservationScreen.dart';
+import 'package:jobs_app/search/searchScreen.dart';
+import 'package:jobs_app/utils/timetable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +34,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   final token = await readToken();
+  
 
   runApp(
     MultiProvider(
@@ -52,42 +57,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: auth.isAuthenticated == false
           ?  LoginScreen()
-          : PersistentTabView(
-              tabs: [
-                PersistentTabConfig(
-                  screen: const HomeScreen(),
-                  item: ItemConfig(
-                    icon: const Icon(Icons.home),
-                    title: "Home",
-                    activeForegroundColor: Colorone,
-                  ),
-                ),
-                PersistentTabConfig(
-                  screen: const SecondScreen(),
-                  item: ItemConfig(
-                    icon: const Icon(Icons.search_outlined),
-                    title: "Search",
-                  ),
-                ),
-                PersistentTabConfig(
-                  screen: const ThirdScreen(),
-                  item: ItemConfig(
-                    icon: const Icon(Icons.history),
-                    title: "Reservations",
-                  ),
-                ),
-                PersistentTabConfig(
-                  screen: const ThirdScreen(),
-                  item: ItemConfig(
-                    icon: const Icon(Icons.person),
-                    title: "Account",
-                  ),
-                ),
-              ],
-              navBarBuilder: (navBarConfig) => Style4BottomNavBar(
-                navBarConfig: navBarConfig,
-              ),
-            ),
+          
+          : Main()
     );
   }
 }
@@ -99,9 +70,50 @@ class SecondScreen extends StatelessWidget {
       const Scaffold(body: Center(child: Text('Messages Screen')));
 }
 
-class ThirdScreen extends StatelessWidget {
-  const ThirdScreen({super.key});
+class Main extends StatelessWidget {
+  const Main({super.key});
+
   @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Settings Screen')));
+  Widget build(BuildContext context) {
+    return PersistentTabView(
+              tabs: [
+                PersistentTabConfig(
+                  screen: const HomeScreen(),
+                  item: ItemConfig(
+                    icon: const Icon(Icons.home),
+                    title: "Home",
+                    activeForegroundColor: Colorone,
+                  ),
+                ),
+                PersistentTabConfig(
+                  screen: SearchScreen(),
+                  item: ItemConfig(
+                    icon: const Icon(Icons.search_outlined),
+                    title: "Search",                    activeForegroundColor: Colorone,
+
+                  ),
+                ),
+                PersistentTabConfig(
+                  screen: ReservationsScreen(),
+                  item: ItemConfig(
+                    icon: const Icon(Icons.history),
+                    title: "Reservations",
+                                        activeForegroundColor: Colorone,
+
+                  ),
+                ),
+                PersistentTabConfig(
+                  screen:  Accountscreen(),
+                  item: ItemConfig(
+                    icon: const Icon(Icons.person),
+                    title: "Account",                    activeForegroundColor: Colorone,
+
+                  ),
+                ),
+              ],
+              navBarBuilder: (navBarConfig) => Style4BottomNavBar(
+                navBarConfig: navBarConfig,
+              ),
+            );
+  }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jobs_app/utils/Const.dart';
 
-AppBar SimpleAppBar(BuildContext context){
+AppBar SimpleAppBar(BuildContext context,String title){
   return AppBar(
-    
+    title:Text( title),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back, color: Colorone, size: 30),

@@ -3,7 +3,7 @@ import 'package:jobs_app/utils/verticalCard.dart';
 import 'package:jobs_app/utils/verticalCard3.dart';
 
 class ImageRow3 extends StatelessWidget {
-  final List<Map<String, String>> imglist;
+  final List<Map<String, dynamic>> imglist;
 
   const ImageRow3({super.key, required this.imglist});
 
@@ -23,9 +23,9 @@ class ImageRow3 extends StatelessWidget {
           return SizedBox(
             width: cardWidth,
             child: VerticalCard3(
-              imgurl: imglist[index]['url'] ?? '',
-              title: imglist[index]['title'] ?? '',
-              price:  imglist[index]['price'] ?? '' ,
+              imgurl: imglist[index]['workerInfo']["imgprofile"] ?? '',
+              title: imglist[index]["serviceInfo"]['title'] ?? '',
+              price:  imglist[index]['price'].toString() ?? '' ,
             ),
           );
         },

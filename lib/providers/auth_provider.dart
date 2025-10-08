@@ -21,6 +21,29 @@ class AuthProvider with ChangeNotifier {
   void setInitialToken(String? token) {
     if (token != null) {
       _token = token;
+      Httpclient.token = token;
+      
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> signUp(Map<String,dynamic> body) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await api.post("auth/signup",
+           body
+      );
+
+        notifyListeners();
+     
+    } catch (e) {
+      throw Exception(e);
+ 
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }
@@ -37,6 +60,7 @@ class AuthProvider with ChangeNotifier {
         final data =response;
         _token = data['accessToken']; // assuming backend returns {token: "..."}
         await storage.write(key: 'jwt', value: _token);
+       
         notifyListeners();
      
     } catch (e) {

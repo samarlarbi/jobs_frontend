@@ -2,26 +2,76 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jobs_app/Controller/Controller.dart';
 import 'package:jobs_app/utils/Const.dart';
 import 'package:jobs_app/utils/appbar.dart';
 import 'package:jobs_app/utils/mybutton.dart';
 import 'package:jobs_app/utils/simpleappbar.dart';
 
 class ReservationPage extends StatefulWidget {
-  final Map<String, String> service;
-  ReservationPage({super.key, required this.service});
+  
+  final int workerinfo;
+  final Map<String, dynamic> service;
+  ReservationPage({super.key, required this.service, required this.workerinfo});
 
   @override
   State<ReservationPage> createState() => _ReservationPageState();
 }
 
 class _ReservationPageState extends State<ReservationPage> {
+  
   DateTime selectedDate = DateTime.now();
   TimeOfDay fromTime = const TimeOfDay(hour: 12, minute: 0);
   TimeOfDay toTime = const TimeOfDay(hour: 16, minute: 0);
+  Map<String,dynamic> userinfo={};
+   final Controller controller = Controller();
 
-  // Generate days list relative to selectedDate, so the selected day is always included and visible
-  List<DateTime> get days =>
+ Future<void>  getprofile () async {
+
+try{
+      print("-+-+-+----+--+-++-+-+-+-+-++-+-+++-+-");
+      print(this.widget.workerinfo);
+
+
+ Map<String, dynamic> res = await controller.getprofile(this.widget.workerinfo);
+
+    print(res);
+
+    
+
+if (!mounted) return;
+setState(() {      userinfo=res["user"];
+ 
+      print("-------------------///////////////////**********00");
+    });
+  } catch (e) {
+    print(e);
+  }
+
+}
+ Future<void>  addreservation (Map<String, dynamic> body) async {
+
+try{
+      print("-+-+-+----+--+-++-+-+-+-+-++-+-+++-+-");
+
+
+ Map<String, dynamic> res = await controller.addreservation(body);
+
+    print(res);
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('reservation created'),backgroundColor: const Color.fromARGB(255, 99, 142, 117)),);
+
+  } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e'),backgroundColor: const Color.fromARGB(255, 168, 67, 59) ,));
+  }
+
+}
+ @override
+  void initState() {
+    getprofile();
+    super.initState();
+  } 
+   List<DateTime> get days =>
       List.generate(6, (index) => selectedDate.add(Duration(days: index)));
 
   String getWeekdayAbbr(int weekday) {
@@ -42,8 +92,8 @@ class _ReservationPageState extends State<ReservationPage> {
       },
     );
     if (picked != null) {
-      setState(() {
-        fromTime = picked;
+if (!mounted) return;
+setState(() {        fromTime = picked;
         if (_toMinutes(fromTime) > _toMinutes(toTime)) {
           toTime = fromTime;
         }
@@ -64,8 +114,8 @@ class _ReservationPageState extends State<ReservationPage> {
       },
     );
     if (picked != null) {
-      setState(() {
-        toTime = picked;
+if (!mounted) return;
+setState(() {        toTime = picked;
         if (_toMinutes(toTime) < _toMinutes(fromTime)) {
           final aux = fromTime;
           fromTime = toTime;
@@ -96,7 +146,7 @@ class _ReservationPageState extends State<ReservationPage> {
     final cardHeight = cardWidth;
 
     return Scaffold(
-      appBar: SimpleAppBar(context),
+      appBar: SimpleAppBar(context,"reservation"),
       backgroundColor: bg,
       body: ListView(
         padding: const EdgeInsets.all(10),
@@ -108,10 +158,10 @@ class _ReservationPageState extends State<ReservationPage> {
             ),
             child: ListTile(
               title: Text(
-                widget.service["title"] ?? "",
+                widget.service["serviceInfo"]["title"] ?? "",
                 style: TextStyle(color: Color2, fontWeight: FontWeight.w800),
               ),
-              subtitle: Text("@ sami ashour"),
+              subtitle: Text(userinfo["name"]??"loading..."),
               onTap: () {},
               trailing: Container(
                 height: cardHeight,
@@ -122,7 +172,7 @@ class _ReservationPageState extends State<ReservationPage> {
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Image.network(
-                  this.widget.service["url"] ?? "",
+                  userinfo['imgprofile']?? "",
                   fit: BoxFit.fill,
                   errorBuilder: (context, error, stackTrace) =>
                       const Center(child: Icon(Icons.broken_image, size: 50)),
@@ -146,9 +196,10 @@ class _ReservationPageState extends State<ReservationPage> {
                 ...days.map((date) {
                   final isSelected = DateUtils.isSameDay(selectedDate, date);
                   return GestureDetector(
+
                     onTap: () {
-                      setState(() {
-                        selectedDate = date;
+if (!mounted) return;
+setState(() {                        selectedDate = date;
                       });
                     },
                     child: Container(
@@ -203,8 +254,8 @@ class _ReservationPageState extends State<ReservationPage> {
                       lastDate: DateTime(2100),
                     );
                     if (picked != null) {
-                      setState(() {
-                        selectedDate = picked;
+if (!mounted) return;
+setState(() {                        selectedDate = picked;
                       });
                     }
                   },
@@ -343,6 +394,14 @@ class _ReservationPageState extends State<ReservationPage> {
             print(day);
             print(from);
             print(to);
+            addreservation({
+              "serviceId":this.widget.service["id"],
+"day":day,
+"endTime":to,
+"startTime":from
+
+
+            });
           }),
         ],
       ),

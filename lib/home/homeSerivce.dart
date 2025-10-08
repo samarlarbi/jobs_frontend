@@ -7,6 +7,24 @@ class HomeService {
 
   HomeService() : api = Httpclient(); // ✅ added semicolon and fixed typo
 
+
+   Future<dynamic> getAllWorkersServices() async {
+    try {
+      String endpoint =Endpoint.user+"/"+ Endpoint.worker_services;
+      var response = await api.get(endpoint);
+      print('-----');
+print(response);
+      if (response != null) {
+        return response;
+      } else {
+        print(" Error: Response does not contain 'data' key or is invalid");
+        throw Exception("No data returned from server");
+      }
+    } catch (e) {
+      throw Exception("Serveur inaccessible. Vérifiez votre connexion !\n$e");
+    }
+  }
+
   Future<dynamic> getAllServices() async {
     try {
       String endpoint =Endpoint.user+"/"+ Endpoint.getallservices;
@@ -17,7 +35,7 @@ print(response);
         return response;
       } else {
         print(" Error: Response does not contain 'data' key or is invalid");
-        throw Exception("⚠️ No data returned from server");
+        throw Exception("No data returned from server");
       }
     } catch (e) {
       throw Exception("Serveur inaccessible. Vérifiez votre connexion !\n$e");

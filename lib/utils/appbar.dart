@@ -8,8 +8,8 @@ PreferredSizeWidget myAppBar() {
     backgroundColor: Colors.white,
     elevation: 2,
     shadowColor: const Color.fromARGB(255, 244, 243, 243),
-    actions: [Icon(Icons.notifications_active_outlined),Padding(padding: EdgeInsetsGeometry.all(10))],
+    leading: Icon(Icons.work , color: Colorone,),
    
-    title:   Text("Welcome Ahmed !", style: TextStyle(color: Colorone , fontWeight: FontWeight.bold  ), textAlign: TextAlign.start,),
+    title:   Text("Jobs", style: TextStyle(color: Colorone , fontWeight: FontWeight.bold  ), textAlign: TextAlign.start,),
   );
 }

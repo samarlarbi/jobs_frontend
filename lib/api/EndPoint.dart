@@ -7,6 +7,9 @@ class Endpoint {
   
   static final String getallservices= "services";
   static final String user= "user";
+  static final String worker= "worker";
+  static final String worker_services= "worker_services";
+  static final String reservation= "reservation";
   
 
 }

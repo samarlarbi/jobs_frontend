@@ -6,7 +6,8 @@ import 'package:jobs_app/workerPage/WorkerScreen.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class Servicecard2 extends StatelessWidget {
-  final Map<String, String> service ;
+  final Map<String, dynamic> service ;
+  
   const Servicecard2({super.key, required this.service});
 
   @override
@@ -42,13 +43,13 @@ class Servicecard2 extends StatelessWidget {
                 children: [
                                                        SizedBox(height: 6),
         
-                  Text(service["title"]??"",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20), )                ,
+                  Text(service["serviceInfo"]["title"]??"",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20), )                ,
                  
          Row(
                     children: [ 
                       Icon(Icons.payments_outlined, color: Colors.blueGrey,size: 15,),
                         SizedBox(width: 6),
-                        Text("100 dt/h",style: TextStyle(fontSize: 15),),
+                        Text(service['price']==0?'discusable': "${service['price']} dt/h",style: TextStyle(fontSize: 15),),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                         ),
@@ -70,7 +71,7 @@ class Servicecard2 extends StatelessWidget {
               ElevatedButton(
   onPressed: () {
 Navigator.push(context,
-  MaterialPageRoute(builder: (context) => ReservationPage(service: service))
+  MaterialPageRoute(builder: (context) => ReservationPage(service: service ,workerinfo: service["workerId"]??0 ,))
                ); },
   style: ButtonStyle(
     minimumSize: WidgetStateProperty.all(const Size(0, 0)), // smallest size
