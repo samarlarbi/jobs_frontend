@@ -9,11 +9,11 @@ import 'package:jobs_app/utils/Const.dart';
                       style: ButtonStyle(
                         padding:WidgetStateProperty.all(
                           
-    const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
   ),  shape: WidgetStateProperty.all(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // adjust radius as you like
       )),
                         backgroundColor: WidgetStateProperty.all(Colorone),
                       ),
-                       child:Text(title,style: TextStyle(color: Colors.white,fontSize: 15),) )  ;}
+                       child:Text(title,style: TextStyle(color: Colors.white,fontSize: 13),) )  ;}

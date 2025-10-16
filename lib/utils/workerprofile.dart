@@ -6,7 +6,7 @@ class ProfileWorker extends StatelessWidget {
   final List<Map<String, dynamic>> posts=[
     {
       "title": "sami ",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsKtVwkch5kVtAVpMvhioDK6zejTxw6BIDfw&s",
+      "url": "https://crawfordmech.com/hubfs/iStock-868702842-min-2048x1365.jpg",
       "price": "100",
       "status": "Available",
       "location":"tunis",
@@ -65,27 +65,33 @@ class ProfileWorker extends StatelessWidget {
              children: [
             
             
-       description!=''?        Text("About" , style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),):Padding(padding: EdgeInsets.all(0))
+       description!=''?        Text("About" , style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),):Padding(padding: EdgeInsets.all(0)),
+       
                             
-                             , description!=''?   Text( description, style: TextStyle(fontSize: 20)):Padding(padding: EdgeInsets.all(0)),
+                              description!=''?   Text( description, style: TextStyle(fontSize: 15)):Padding(padding: EdgeInsets.all(0)),
                           
              
-      Text("Services" , style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),)
-          ,                      
+                                
 SizedBox(height: 5,),
   SizedBox(
-    height: cardHeight*0.53,
+    height: cardHeight*0.45,
             width: screenWidth,
             child: ListView.builder(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(3.0),
 
               scrollDirection: Axis.horizontal,
               itemCount: services.length,
               itemBuilder: (context, index) {
-                return Servicecard2(service: services[index]);
+                return Row(
+                  children: [
+                    Servicecard2(service: services[index]),
+                    SizedBox(width: 10,)
+                  ],
+                );
               },
             ),),
-                        Text("Posts  " , style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            SizedBox(height: 5,)
+,                        Text("Photos  " , style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
 
           SizedBox(height: 5,),
 

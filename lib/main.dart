@@ -82,6 +82,8 @@ class Main extends StatelessWidget {
                   item: ItemConfig(
                     icon: const Icon(Icons.home),
                     title: "Home",
+                    textStyle: TextStyle(fontSize: 8),
+
                     activeForegroundColor: Colorone,
                   ),
                 ),
@@ -90,6 +92,7 @@ class Main extends StatelessWidget {
                   item: ItemConfig(
                     icon: const Icon(Icons.search_outlined),
                     title: "Search",                    activeForegroundColor: Colorone,
+                    textStyle: TextStyle(fontSize: 8),
 
                   ),
                 ),
@@ -99,6 +102,7 @@ class Main extends StatelessWidget {
                     icon: const Icon(Icons.history),
                     title: "Reservations",
                                         activeForegroundColor: Colorone,
+                    textStyle: TextStyle(fontSize: 8),
 
                   ),
                 ),
@@ -107,6 +111,7 @@ class Main extends StatelessWidget {
                   item: ItemConfig(
                     icon: const Icon(Icons.person),
                     title: "Account",                    activeForegroundColor: Colorone,
+                    textStyle: TextStyle(fontSize: 8),
 
                   ),
                 ),

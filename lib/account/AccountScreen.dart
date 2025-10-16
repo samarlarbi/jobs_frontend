@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobs_app/utils/Const.dart';
 import 'package:jobs_app/utils/mybutton.dart';
+import 'package:jobs_app/utils/offshiftscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:jobs_app/auth/loginScreen.dart';
 import 'package:jobs_app/providers/auth_provider.dart';
@@ -60,220 +61,207 @@ setState(() {        isLoading = false;
     }
 
     final bool isWorker = userinfo["role"] == "WORKER";
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F9),
-      body: Column(
-        children: [
-          const SizedBox(height: 50),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  "Account",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Icon(Icons.notifications_none),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Profile Info
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.blue, width: 2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
+return Scaffold(
+  backgroundColor: const Color(0xFFF4F5F9),
+  body: SafeArea(
+    child: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-              CircleAvatar(
-  radius: 30,
-  backgroundImage: (userinfo["imgprofile"] != null && (userinfo["imgprofile"] as String).isNotEmpty)
-      ? NetworkImage(userinfo["imgprofile"])
-      : null,
-  child: (userinfo["imgprofile"] == null || (userinfo["imgprofile"] as String).isEmpty)
-      ? const Icon(Icons.person, size: 45)
-      : null,
-),
-
-                const SizedBox(width: 15),
                 Expanded(
                   child: Text(
-                    userinfo["name"] ?? "",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                    "Account",
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: Colors.grey[900]),
                   ),
                 ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.notifications_none, size: 26),
+                )
               ],
             ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Only show description if worker
-          if (isWorker && (workerinfo["description"] ?? "").isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Text(
-                  workerinfo["description"] ?? "",
-                  style: const TextStyle(fontSize: 14),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 6))],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 38,
+                      backgroundImage: (userinfo["imgprofile"] is String && (userinfo["imgprofile"] as String).isNotEmpty)
+                          ? NetworkImage(userinfo["imgprofile"])
+                          : null,
+                      child: (userinfo["imgprofile"] == null || (userinfo["imgprofile"] as String).isEmpty)
+                          ? const Icon(Icons.person, size: 40)
+                          : null,
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            (userinfo["name"] is String) ? userinfo["name"] as String : "",
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            (userinfo["email"] is String) ? userinfo["email"] as String : "",
+                            style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                          ),
+                          const SizedBox(height: 8),
+                          
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-
-          const SizedBox(height: 10),
-
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                if (isWorker) ...[
-                  const Text(
-                    "My Services",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  ...services.map((service) {
-                    final info = service["serviceInfo"];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Image.network(
-                            info?["url"] ??
-                                "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            info?["title"] ?? "Unknown",
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  const SizedBox(height: 20),
-                ],
-
-                const Text(
-                  "Profile actions",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            const SizedBox(height: 16),
+            if (isWorker && (workerinfo["description"] is String) && (workerinfo["description"] as String).isNotEmpty)
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+                padding: const EdgeInsets.all(14),
+                child: Text(
+                  workerinfo["description"] as String,
+                  style: const TextStyle(fontSize: 12),
                 ),
-
-                ListTile(
-                  leading: const Icon(Icons.edit),
-                  title: const Text("EDIT PROFILE"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            EditProfileScreen(userinfo: userinfo),
+              ),
+            if (isWorker) const SizedBox(height: 16),
+            if (isWorker)
+              Text("My Services", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.grey[900])),
+            if (isWorker) const SizedBox(height: 10),
+            if (isWorker)
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+                padding: const EdgeInsets.all(12),
+                child: services.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: Text("No services yet", style: TextStyle(color: Colors.grey[600]))),
+                      )
+                    : Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: services.map((service) {
+                          final info = (service["serviceInfo"] is Map) ? Map<String, dynamic>.from(service["serviceInfo"]) : <String, dynamic>{};
+                          final title = (info["title"] is String) ? info["title"] as String : "Unknown";
+                          final url = (info["url"] is String && (info["url"] as String).isNotEmpty)
+                              ? info["url"] as String
+                              : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                          return SizedBox(
+                            width: (MediaQuery.of(context).size.width - 64) / 3,
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey[100]),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      url,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.build, size: 36),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 12),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    );
-                  },
-                ),
-
-                if (isWorker)
+              ),
+            const SizedBox(height: 18),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+              child: Column(
+                children: [
                   ListTile(
-                    leading: const Icon(Icons.work_outline),
-                    title: const Text("EDIT SERVICES"),
+                    leading: const Icon(Icons.edit),
+                    title: const Text("EDIT PROFILE"),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditServicesScreen(services: services),
-                        ),
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen(userinfo: userinfo)))
+                          .then((_) => getprofile());
                     },
                   ),
-
-                if (isWorker)
+                  if (isWorker)
+                    const Divider(height: 1),
+                  if (isWorker)
+                    ListTile(
+                      leading: const Icon(Icons.work_outline),
+                      title: const Text("EDIT SERVICES"),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => EditServicesScreen(services: services)))
+                            .then((_) => getprofile());
+                      },
+                    ),
+                  if (isWorker)
+                    const Divider(height: 1),
+                  if (isWorker)
+                    ListTile(
+                      leading: const Icon(Icons.history_toggle_off_rounded),
+                      title: const Text("Off Shifts"),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const OffShiftScreen()))
+                            .then((_) => getprofile());
+                      },
+                    ),
+                  const Divider(height: 1),
                   ListTile(
-                    leading: const Icon(Icons.history_toggle_off_rounded),
-                    title: const Text("Off Shifts"),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OffShiftScreen(),
-                        ),
-                      );
-                    },
-                  ),
-
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text("Log Out"),
-                  trailing: auth.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () async {
-                    try {
-                      await auth.logout();
-                      if (!auth.isAuthenticated) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
+                    leading: const Icon(Icons.logout),
+                    title: const Text("Log Out"),
+                    trailing: auth.isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () async {
+                      try {
+                        await auth.logout();
+                        if (!auth.isAuthenticated) {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logout failed: $e'), backgroundColor: const Color.fromARGB(255, 149, 59, 52)));
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Logout failed: $e'),
-                        backgroundColor: const Color.fromARGB(255, 149, 59, 52),
-                      ));
-                    }
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
-          )
-        ],
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.ev_station), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
-      ),
-    );
-  }
-}
+    ),
+  ),
+  
+);
+  }}
 
 // Placeholder screens you must implement or import:
 
@@ -645,225 +633,3 @@ setState(() {                        newServices[i]["serviceTypeId"] = selectedI
 }
 
 
-
-
-class OffShiftScreen extends StatefulWidget {
-  const OffShiftScreen({super.key});
-
-  @override
-  State<OffShiftScreen> createState() => _OffShiftScreenState();
-}
-
-class _OffShiftScreenState extends State<OffShiftScreen> {
-  final Controller controller = Controller();
-
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay fromTime = const TimeOfDay(hour: 9, minute: 0);
-  TimeOfDay toTime = const TimeOfDay(hour: 12, minute: 0);
-  TextEditingController reasonController = TextEditingController();
-
-  List<Map<String, dynamic>> offShifts = [];
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchOffShifts();
-  }
-
-  Future<void> fetchOffShifts() async {
-    setState(() => isLoading = true);
-    try {
-      final data = await controller.getWorkerOffShifts();
-      setState(() => offShifts = data);
-    } finally {
-      setState(() => isLoading = false);
-    }
-  }
-
-Future<void> pickTime(bool isFrom) async {
-  TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: isFrom ? fromTime : toTime,
-    initialEntryMode: TimePickerEntryMode.inputOnly,
-    builder: (context, child) {
-      return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      );
-    },
-  );
-  if (picked != null) {
-if (!mounted) return;
-setState(() {      if (isFrom) {
-        fromTime = picked;
-      } else {
-        toTime = picked;
-      }
-    });
-  }
-}
-
-
-  Future<void> saveOffShift() async {
-  try {
-    final newShift = {
-      "day": DateFormat('yyyy-MM-dd').format(selectedDate),
-      "startTime": formatTime(fromTime),
-      "endTime": formatTime(toTime),
-    };
-
-    await controller.addOffShift(newShift);
-    reasonController.clear();
-    fetchOffShifts();
-  ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("OffShift ajouté avec succès!")),
-    );
-  } catch (e) {
-    String errorMessage = e.toString();
-
-    // Extract backend message if wrapped
-    if (errorMessage.contains("OffShift with same day")) {
-      errorMessage = "Un OffShift avec la même date et horaire existe déjà.";
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("offshift already exists")),
-    );
-  }
- 
-  }
-
-
-  String formatTime(TimeOfDay t) =>
-      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
-
-  Future<void> deleteShift(int id) async {
-    await controller.deleteOffShift(id);
-    fetchOffShifts();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Off Shifts"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            const SizedBox(height: 10),
-            Text(
-              'Select a day',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            CalendarDatePicker(
-              initialDate: selectedDate,
-              firstDate: DateTime.now().subtract(const Duration(days: 30)),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-              onDateChanged: (date) => setState(() => selectedDate = date),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => pickTime(true),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.grey[200],
-                      ),
-                      child: Text('From: ${formatTime(fromTime)}'),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => pickTime(false),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.grey[200],
-                      ),
-                      child: Text('To: ${formatTime(toTime)}'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: reasonController,
-              decoration: InputDecoration(
-                labelText: 'Reason',
-                hintText: 'Add a note...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: saveOffShift,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colorone,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Save Off Shift',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              'Your Off Shifts',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 10),
-            if (isLoading)
-              const Center(child: CircularProgressIndicator())
-            else if(offShifts.length == 0 )
-
-    Center(
-      child: Text(
-                  'No Off Shift',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-    )
-            
-            else
-              ...offShifts.map((shift) => Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      title: Text(
-                        DateFormat('EEEE, MMM d')
-                            .format(DateTime.parse(shift['day'])),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('From: ${shift['startTime']} - To: ${shift['endTime']}'),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => deleteShift(shift['id']),
-                      ),
-                    ),
-                  )),
-          ],
-        ),
-      ),
-    );
-  }
-}

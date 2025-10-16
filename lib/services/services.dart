@@ -86,7 +86,7 @@ Future<void> deletereservation(int workerServiceId) async {
 }
 Future<Map<String, dynamic>> updateWorkerProfile(Map<String, dynamic> body) async {
   try {
-    String endpoint = "worker";
+    String endpoint = "user";
     var response = await api.put(endpoint, body);
     return response;
   } catch (e) {

@@ -28,34 +28,32 @@ class _WorkerscreenState extends State<Workerscreen> {
 
   Future<void> getprofile() async {
     try {
-if (!mounted) return;
-setState(() {        isLoading = true;
+      if (!mounted) return;
+      setState(() {
+        isLoading = true;
       });
-      print("-+-+-+----+--+-++-+-+-+-+-++-+-+++-+-");
 
-      Map<String, dynamic> res = await controller.getprofile(this.widget.id);
+      Map<String, dynamic> res = await controller.getprofile(widget.id);
 
-      print(res);
-
-if (!mounted) return;
-setState(() {        infos = res;
+      if (!mounted) return;
+      setState(() {
+        infos = res;
         userinfo = res["user"] ?? {};
         workerinfo = res["workerinfo"] ?? {};
         services = (res['services'] as List<dynamic>?)
                 ?.map((item) => item as Map<String, dynamic>)
                 .toList() ??
             [];
-        print("-------------------///////////////////**********00");
-        print(infos);
       });
     } catch (e) {
-      print("Error fetching profile: $e");
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load profile')),
       );
     } finally {
-if (!mounted) return;
-setState(() {        isLoading = false;
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -75,7 +73,8 @@ setState(() {        isLoading = false;
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (userinfo["phone"] != null && userinfo["phone"].toString().isNotEmpty)
+              if (userinfo["phone"] != null &&
+                  userinfo["phone"].toString().isNotEmpty)
                 Row(
                   children: [
                     const Icon(Icons.phone, color: Color2),
@@ -83,7 +82,8 @@ setState(() {        isLoading = false;
                     Text(userinfo["phone"].toString()),
                   ],
                 ),
-              if (userinfo["email"] != null && userinfo["email"].toString().isNotEmpty)
+              if (userinfo["email"] != null &&
+                  userinfo["email"].toString().isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
@@ -94,8 +94,10 @@ setState(() {        isLoading = false;
                     ],
                   ),
                 ),
-              if ((userinfo["phone"] == null || userinfo["phone"].toString().isEmpty) &&
-                  (userinfo["email"] == null || userinfo["email"].toString().isEmpty))
+              if ((userinfo["phone"] == null ||
+                      userinfo["phone"].toString().isEmpty) &&
+                  (userinfo["email"] == null ||
+                      userinfo["email"].toString().isEmpty))
                 const Text("No contact information available."),
             ],
           ),
@@ -113,7 +115,7 @@ setState(() {        isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SimpleAppBar(context, "Profile"),
+      appBar: SimpleAppBar(context, ""),
       backgroundColor: bg,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -122,40 +124,68 @@ setState(() {        isLoading = false;
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(horizontal:  5),
                     color: Colors.white,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        CircleAvatar(
+                          radius: 45,
+                          backgroundColor:
+                              const Color.fromARGB(255, 230, 230, 230),
+                          backgroundImage: (userinfo["imgprofile"] != null &&
+                                  (userinfo["imgprofile"] as String).isNotEmpty)
+                              ? NetworkImage(userinfo["imgprofile"])
+                              : null,
+                          child: (userinfo["imgprofile"] == null ||
+                                  (userinfo["imgprofile"] as String).isEmpty)
+                              ? const Icon(Icons.person,
+                                  size: 45, color: Colors.grey)
+                              : null,
+                        ),
                         Text(
                           userinfo["name"] ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22),
                         ),
-                        const SizedBox(height: 8),
                         Row(
+
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            const Icon(Icons.location_on_outlined, color: Colors.blueGrey),
-                            const SizedBox(width: 6),
-                            Text(userinfo["location"] ?? ''),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.location_on_outlined,
+                                    color: Colors.blueGrey),
+                                const SizedBox(width: 6),
+                                Text(
+                                  userinfo["location"] ?? '',
+                                  style:
+                                      const TextStyle(color: Colors.blueGrey),
+                                ),
+                              ],
+                            ),
+                            Text("|"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.star_rounded, color: Color2),
+                                SizedBox(width: 3),
+                                Text("4.7"),
+                                Text(" (122 Reviews)",
+                                    style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: const [
-                            Icon(Icons.star_rounded, color: Color2),
-                            SizedBox(width: 6),
-                            Text("4.7"),
-                            Text(" (122 Reviews)", style: TextStyle(color: Colors.grey)),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
                             Expanded(
                               child: MyButton("Contact", showContactDialog),
                             ),
                             const SizedBox(width: 10),
-                             Expanded(child: MyButton2("Add to favorites")),
+                            Expanded(child: MyButton2("Add to favorites")),
                           ],
                         ),
                       ],
@@ -164,10 +194,16 @@ setState(() {        isLoading = false;
                   Container(
                     color: Colors.white,
                     child: TabBar(
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 24),
+                      
+                      labelPadding:
+                          const EdgeInsets.symmetric(horizontal: 25),
                       tabs: const [
-                        Tab(child: Text('Profile', style: TextStyle(color: Colors.black))),
-                        Tab(child: Text('Reviews', style: TextStyle(color: Colors.black))),
+                        Tab(
+                            child: Text('Profile',
+                                style: TextStyle(color: Colors.black))),
+                        Tab(
+                            child: Text('Reviews',
+                                style: TextStyle(color: Colors.black))),
                       ],
                       indicator: ContainerTabIndicator(
                         width: 100,
@@ -186,7 +222,7 @@ setState(() {        isLoading = false;
                         Container(
                           color: Colors.white,
                           child: ListView(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(10),
                             children: [
                               ProfileWorker(
                                 services: services,
@@ -198,13 +234,14 @@ setState(() {        isLoading = false;
                         Container(
                           color: Colors.white,
                           child: ListView.builder(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(10),
                             itemCount: 5,
                             itemBuilder: (context, index) {
                               return const ListTile(
                                 leading: Icon(Icons.person),
                                 title: Text("User Review"),
-                                subtitle: Text("Great service! Highly recommended."),
+                                subtitle: Text(
+                                    "Great service! Highly recommended."),
                               );
                             },
                           ),

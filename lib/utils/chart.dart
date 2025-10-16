@@ -38,7 +38,7 @@ class WeeklyBarChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Weekly Reservations",
+          const Text("Reservations  ",
               style: TextStyle(color: Color2, fontSize: 15)),
           const SizedBox(height: 20),
           Row(

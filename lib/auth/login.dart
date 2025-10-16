@@ -27,6 +27,7 @@ class _LoginState extends State<Login> {
     
       body: SingleChildScrollView(
           child: Container(
+            color: Colors.white,
         height: 700,
         padding: EdgeInsets.all(30),
         child: Column(

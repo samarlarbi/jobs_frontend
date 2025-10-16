@@ -115,244 +115,197 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     });
   }
 
-  Widget buildReservationList(List<Map<String, dynamic>> data,
-      {bool isIncoming = false}) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        if (userinf!['role'] == "CLIENT") {
-          await getClientReservations();
-        } else if (userinf!['role'] == "WORKER") {
-          await getWorkerReservations();
-        }
-      },
-      child: data.isEmpty
-          ? ListView(
-              children: const [
-                SizedBox(height: 300),
-                Center(child: Text("No reservations found.")),
-              ],
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                var color;
-                var icon;
-                if (data[index]["status"] == "pending") {
-                  color = Color2;
-                  icon = Icons.timelapse_rounded;
-                } else if (data[index]["status"] == "confirmed" ||
-                    data[index]["status"] == "accepted") {
-                  color = Colors.green;
-                  icon = Icons.check_circle;
-                } else {
-                  color = Colors.red;
-                  icon = Icons.cancel;
-                }
+ Widget buildReservationList(List<Map<String, dynamic>> data,
+    {bool isIncoming = false}) {
+  return RefreshIndicator(
+    onRefresh: () async {
+      if (userinf!['role'] == "CLIENT") {
+        await getClientReservations();
+      } else if (userinf!['role'] == "WORKER") {
+        await getWorkerReservations();
+      }
+    },
+    child: data.isEmpty
+        ? ListView(
+            children: const [
+              SizedBox(height: 300),
+              Center(child: Text("No reservations found.")),
+            ],
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.all(10),
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              var color;
+              var icon;
+              var status = data[index]["status"] ?? "pending";
 
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 217, 217, 217)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color.fromARGB(255, 230, 229, 229),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                  margin: const EdgeInsets.symmetric(vertical: 3),
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isIncoming)
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 25,
-                              backgroundImage: data[index]["clientimg"] != null
-                                  ? NetworkImage(data[index]["clientimg"])
-                                  : null,
-                              child: data[index]["clientimg"] == null
-                                  ? const Icon(Icons.person)
-                                  : null,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    data[index]["title"] ?? 'No Service',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    data[index]["clientname"] ??
-                                        "Unknown Client",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    data[index]["clientphone"] ?? "No phone",
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        )
-                      else
-                        Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  color: Color.fromARGB(255, 217, 217, 217)),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              if (status == "pending") {
+                color = Color2;
+                icon = Icons.timelapse_rounded;
+              } else if (status == "confirmed" || status == "accepted") {
+                color = Colors.green;
+                icon = Icons.check_circle;
+              } else {
+                color = Colors.red;
+                icon = Icons.cancel;
+              }
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 217, 217, 217)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 230, 229, 229),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    )
+                  ],
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 3),
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Display opposite user info (Client for Worker, Worker for Client)
+                    Row(
+                      children: [
+                       CircleAvatar(
+    radius: 25,
+    backgroundImage: (userinf!['role'] == "WORKER"
+            ? data[index]["clientimg"]
+            : data[index]["workerimg"]) != null &&
+            (userinf!['role'] == "WORKER"
+                ? data[index]["clientimg"]
+                : data[index]["workerimg"]).isNotEmpty
+        ? NetworkImage(userinf!['role'] == "WORKER"
+            ? data[index]["clientimg"]
+            : data[index]["workerimg"])
+        : null,
+    child: (userinf!['role'] == "WORKER"
+            ? data[index]["clientimg"]
+            : data[index]["workerimg"]) == null ||
+            (userinf!['role'] == "WORKER"
+                ? data[index]["clientimg"]
+                : data[index]["workerimg"]).isEmpty
+        ? const Icon(Icons.person)
+        : null,
+  ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(data[index]["title"]),
-                                  Text(
-                                    "@${data[index]["workerName"] ?? "Unknown"}",
-                                    style:
-                                        const TextStyle(color: Colors.grey),
-                                  ),
-                                ],
+                              Text(
+  userinf!['role'] == "WORKER"
+                                    ? data[index]["clientname"] ?? "Unknown Client"
+                                    : data[index]["workerName"] ?? "Unknown Worker",
+                                                           style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(icon, color: color, size: 18),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    data[index]["status"],
-                                    style: TextStyle(
-                                        color: color, fontSize: 13),
-                                  ),
-                                ],
+                              const SizedBox(height: 4),
+                              Text(
+                                 data[index]["title"] ?? 'No Service'
+                            ,       style: const TextStyle(fontSize: 16),
                               ),
+                             
                             ],
                           ),
                         ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today_outlined,
-                              color: Color.fromARGB(255, 146, 148, 150),
-                              size: 15),
-                          const SizedBox(width: 8),
-                          Text(data[index]["day"] ?? '',
-                              style: const TextStyle(
-                                  color: Color.fromARGB(255, 146, 148, 150))),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time,
-                              color: Color.fromARGB(255, 146, 148, 150),
-                              size: 15),
-                          const SizedBox(width: 8),
-                          Text(
-                            "${data[index]["startTime"]?.substring(0, 5) ?? ''} - ${data[index]["endTime"]?.substring(0, 5) ?? ''}",
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today_outlined,
+                            color: Color.fromARGB(255, 146, 148, 150), size: 15),
+                        const SizedBox(width: 8),
+                        Text(data[index]["day"] ?? '',
                             style: const TextStyle(
-                                color: Color.fromARGB(255, 146, 148, 150)),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: const [
-                          Icon(Icons.location_on_outlined,
-                              color: Color.fromARGB(255, 146, 148, 150),
-                              size: 15),
-                          SizedBox(width: 8),
-                          Text("medenine",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 146, 148, 150))),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                                color: Color.fromARGB(255, 146, 148, 150))),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        const Icon(Icons.access_time,
+                            color: Color.fromARGB(255, 146, 148, 150), size: 15),
+                        const SizedBox(width: 8),
+                        Text(
+                          "${data[index]["startTime"]?.substring(0, 5) ?? ''} - ${data[index]["endTime"]?.substring(0, 5) ?? ''}",
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 146, 148, 150)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: userinf!['role'] == "CLIENT"
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Worker can update status for incoming reservations
+                        if (userinf!['role'] == "WORKER")
                           DropdownButton<String>(
                             value: data[index]["status"],
-                            items: <String>[
-                              'pending',
-                              'accepted',
-                              'rejected'
-                            ].map((String value) {
+                            items: <String>['pending', 'accepted', 'rejected']
+                                .map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
-                                child: Text(value[0].toUpperCase() +
-                                    value.substring(1)),
+                                child: Text(
+                                    value[0].toUpperCase() + value.substring(1)),
                               );
                             }).toList(),
                             onChanged: (newStatus) {
                               if (newStatus != null &&
                                   newStatus != data[index]["status"]) {
-                                updateReservationStatus(
-                                    data[index]["id"], newStatus);
+                                updateReservationStatus(data[index]["id"], newStatus);
                               }
                             },
                           ),
-                          ElevatedButton(
-                            onPressed: () =>
-                                deleteReservation(data[index]["id"]),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(
-                                      Colors.white),
-                              foregroundColor:
-                                  MaterialStateProperty.all<Color>(
-                                      const Color.fromARGB(
-                                          255, 244, 139, 132)),
-                              side: MaterialStateProperty.all<BorderSide>(
-                                const BorderSide(
-                                    color: Color.fromARGB(
-                                        255, 244, 139, 132)),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.delete_forever,
-                                    color: Color.fromARGB(
-                                        255, 220, 126, 119)),
-                                SizedBox(width: 4),
-                                Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(
-                                          255, 220, 126, 119)),
-                                ),
-                              ],
+                        ElevatedButton(
+                          onPressed: () => deleteReservation(data[index]["id"]),
+                          style: ButtonStyle(
+                            fixedSize: userinf!['role'] == "CLIENT"
+                                ? MaterialStateProperty.all(
+                                    Size(MediaQuery.of(context).size.width * 0.8, 20))
+                                : null,
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            foregroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromARGB(255, 244, 139, 132)),
+                            side: MaterialStateProperty.all<BorderSide>(
+                              const BorderSide(
+                                  color: Color.fromARGB(255, 244, 139, 132)),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-    );
-  }
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.delete_forever,
+                                  color: Color.fromARGB(255, 220, 126, 119)),
+                              SizedBox(width: 4),
+                              Text(
+                                "Delete",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 220, 126, 119)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
